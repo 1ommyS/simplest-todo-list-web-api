@@ -1,0 +1,21 @@
+server:
+  port: 8090
+
+spring:
+  liquibase:
+    user: todolist_user
+    password: 12345
+    change-log: 'classpath:db/changelog/changelog.xml'
+  datasource:
+    url: "jdbc:postgresql://194.67.105.79:5432/todolist_db?currentSchema=public"
+    username: todolist_user
+    password: 12345
+
+logging:
+  level: info
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) %logger{36} %M - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} %M - %msg%n"
+  file:
+    name: log.txt
+
