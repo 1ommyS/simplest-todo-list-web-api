@@ -1,0 +1,20 @@
+server:
+  port: 8090
+
+spring:
+  liquibase:
+    user: postgres
+    password:
+    change-log: 'classpath:db/changelog/changelog.xml'
+  datasource:
+    url: "jdbc:postgresql://localhost:5435/shop"
+    username: postgres
+    password:
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) %logger{36} %M - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} %M - %msg%n"
+  file:
+    name: log.txt
+
