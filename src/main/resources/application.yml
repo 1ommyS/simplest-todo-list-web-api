@@ -3,13 +3,13 @@ server:
 
 spring:
   liquibase:
-    user: postgres
-    password:
+    user: ivanalex_user
+    password: 12345
     change-log: 'classpath:db/changelog/changelog.xml'
   datasource:
-    url: "jdbc:postgresql://localhost:5435/shop"
-    username: postgres
-    password:
+    url: "jdbc:postgresql://194.67.105.79:5432/todolist_db"
+    username: ivanalex_user
+    password: 12345
 
 logging:
   pattern:

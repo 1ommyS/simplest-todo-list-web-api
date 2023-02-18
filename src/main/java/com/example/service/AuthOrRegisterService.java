@@ -8,6 +8,7 @@ import com.example.model.User;
 import com.example.repository.UserRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthOrRegisterService {
     private final UserRepository repository;
@@ -25,18 +27,24 @@ public class AuthOrRegisterService {
     private final AuthenticationManager authenticationManager;
 
     public AuthOrRegisterResponseDto register(RegisterRequestDto registerRequestDto) {
+        log.info("AuthOrRegisterService.register - in: get dto");
         User user = User.builder()
                 .name(registerRequestDto.getName())
                 .login(registerRequestDto.getLogin())
                 .password(passwordEncoder.encode(registerRequestDto.getPassword()))
                 .email(registerRequestDto.getEmail())
                 .build();
+
+        log.info("Build user with name: {}, login:{}, email:{}", registerRequestDto.getName(), registerRequestDto.getLogin(), registerRequestDto.getEmail());
         repository.save(user);
+        log.info("User is saved");
 
         UserDto userDto = mapper.map(user, UserDto.class);
         String userDtoJson = gson.toJson(userDto);
 
+        log.info("User was converted to JSON");
         var jwtToken = jwtService.generateToken(userDtoJson);
+        log.info("Token was generated: {}", jwtToken);
 
         return AuthOrRegisterResponseDto.builder()
                 .token(jwtToken)
@@ -44,27 +52,29 @@ public class AuthOrRegisterService {
     }
 
     public AuthOrRegisterResponseDto authenticate(AuthRequestDto authRequestDto) {
-        /*authenticationManager.authenticate(
+        log.info("Preparing user to authentication");
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequestDto.getLogin(),
                         authRequestDto.getPassword()
                 )
-                );*/
-        return AuthOrRegisterResponseDto.builder().token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c").build();
+        );
+        log.info("User was authenticated");
 
-
-
-        /*User user = repository.findByLogin(authRequestDto.getLogin())
+        User user = repository.findByLogin(authRequestDto.getLogin())
                 .orElseThrow();
+        log.info("User from db: {}", user.toString());
 
         UserDto userDto = mapper.map(user, UserDto.class);
         String userDtoJson = gson.toJson(userDto);
+        log.info("UserDtoJson was generated");
 
         String jwtToken = jwtService.generateToken(userDtoJson);
-
+        log.info("Generate jwt token");
+        
         return AuthOrRegisterResponseDto.builder()
                 .token(jwtToken)
-                .build();*/
+                .build();
     }
 
 
