@@ -2,7 +2,7 @@ package com.example.service;
 
 import com.example.dto.TodoCreateDto;
 import com.example.dto.UserDto;
-import com.example.exception.JwtTokenExpired;
+import com.example.exception.JwtTokenExpiredException;
 import com.example.model.Todo;
 import com.example.model.User;
 import com.example.repository.TodoRepository;
@@ -28,11 +28,11 @@ public class TodoService {
     private final Gson gson;
     private final JwtService jwtService;
 
-    public void createTodo(TodoCreateDto dto) throws JwtTokenExpired {
+    public void createTodo(TodoCreateDto dto) throws JwtTokenExpiredException {
         var token = dto.getToken();
 
         if (jwtService.isTokenExpired(token)) {
-            throw new JwtTokenExpired("Your token is expired");
+            throw new JwtTokenExpiredException("Your token is expired");
         }
 
         String userPayloadJson = jwtService.extractUsername(token);

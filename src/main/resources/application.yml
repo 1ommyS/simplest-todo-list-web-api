@@ -17,4 +17,5 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} %M - %msg%n"
   file:
     name: log.txt
+  level.root: info
 

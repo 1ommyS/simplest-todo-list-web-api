@@ -1,0 +1,1 @@
+alter table users alter column password type varchar(512) using password::varchar(512);
