@@ -4,9 +4,10 @@
 
     <changeSet id="19-02-2023-update_table_users.xml" author="AlexVanya">
 
-        <update tableName="users">
-            <column name="password" type="varchar(256)"/>
-        </update>
+        <sqlFile path="../sql/19-02-2023-update_table_users.sql" relativeToChangelogFile="true" splitStatements="true" stripComments="true" dbms="postgresql"></sqlFile>
 
     </changeSet>
+
+
+
 </databaseChangeLog>
