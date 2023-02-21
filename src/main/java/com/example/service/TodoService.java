@@ -1,6 +1,8 @@
 package com.example.service;
 
+import com.example.dto.CompleteTodoDto;
 import com.example.dto.TodoCreateDto;
+import com.example.dto.TodoDto;
 import com.example.dto.UserDto;
 import com.example.exception.JwtTokenExpiredException;
 import com.example.model.Todo;
@@ -13,6 +15,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author 1ommy
@@ -38,9 +44,7 @@ public class TodoService {
         String userPayloadJson = jwtService.extractUsername(token);
         UserDto userDto = gson.fromJson(userPayloadJson, UserDto.class);
 
-        User user = userRepository.findByLogin(userDto.getLogin()).orElseThrow(() -> {
-            throw new EntityNotFoundException("This user isn't exist");
-        });
+        User user = userRepository.findByLogin(userDto.getLogin()).orElseThrow(EntityNotFoundException::new);
 
         Todo todo = Todo.builder()
                 .text(dto.getText())
@@ -49,5 +53,34 @@ public class TodoService {
                 .build();
 
         repository.save(todo);
+    }
+
+    public void completeTodo(CompleteTodoDto dto) throws JwtTokenExpiredException {
+        var token = dto.getToken();
+
+        if (jwtService.isTokenExpired(token)) {
+            throw new JwtTokenExpiredException("Your token is expired");
+        }
+
+        repository.completeTodo(dto.getId());
+    }
+
+    public List<TodoDto> getAllTodos(String token) throws JwtTokenExpiredException {
+
+        if (jwtService.isTokenExpired(token)) {
+            throw new JwtTokenExpiredException("Your token is expired");
+        }
+
+        String userPayloadJson = jwtService.extractUsername(token);
+        UserDto userDto = gson.fromJson(userPayloadJson, UserDto.class);
+
+        var user = userRepository.findById(userDto.getId()).orElseThrow(EntityNotFoundException::new);
+
+        List<TodoDto> allTodos = repository
+                .findAllByUser(user)
+                .stream()
+                .map(todo -> mapper.map(todo, TodoDto.class))
+                .collect(Collectors.toList());
+        return allTodos;
     }
 }
