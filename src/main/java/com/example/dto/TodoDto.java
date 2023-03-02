@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TodoDto {
     public Integer id;
-    public String name;
+    public String text;
     public Boolean isDone;
 }
