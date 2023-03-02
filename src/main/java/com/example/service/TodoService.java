@@ -76,11 +76,10 @@ public class TodoService {
 
         var user = userRepository.findById(userDto.getId()).orElseThrow(EntityNotFoundException::new);
 
-        List<TodoDto> allTodos = repository
+        return repository
                 .findAllByUser(user)
                 .stream()
                 .map(todo -> mapper.map(todo, TodoDto.class))
                 .collect(Collectors.toList());
-        return allTodos;
     }
 }

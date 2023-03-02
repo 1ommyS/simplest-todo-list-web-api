@@ -7,6 +7,7 @@ import com.example.exception.JwtTokenExpiredException;
 import com.example.model.Todo;
 import com.example.service.TodoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,16 +30,19 @@ public class TodoController {
     private final TodoService service;
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public List<TodoDto> getAllTodos(@RequestBody String token) throws JwtTokenExpiredException {
         return service.getAllTodos(token);
     }
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public void createTodo(@RequestBody TodoCreateDto todoCreateDto) throws JwtTokenExpiredException {
         service.createTodo(todoCreateDto);
     }
 
-    @PutMapping("/update")
+    @PutMapping
+    @PreAuthorize("isAuthenticated()")
     public void completeTodo(@RequestBody CompleteTodoDto dto) throws JwtTokenExpiredException {
         service.completeTodo(dto);
     }
